@@ -36,7 +36,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     userName: "",
     userPhone: "",
     appointmentType: "CONSULTATION",
-    appointmentDate: "",
+    appointmentDate: new Date().toISOString().slice(0, 16),
     bookingDetails: {
       subject: "",
       level: "",
