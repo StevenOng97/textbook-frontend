@@ -283,7 +283,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
                   <div className="bg-white rounded-lg p-4 mb-6 border border-green-300">
                     <p className="text-green-700 font-medium mb-2">
-                      <strong>Booking Magic Link:</strong> {bookingResponse.magicLink}
+                      <strong>Booking Magic Link:</strong> <a href={bookingResponse.magicLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">{bookingResponse.magicLink}</a>
                     </p>
                   </div>
                 </div>
