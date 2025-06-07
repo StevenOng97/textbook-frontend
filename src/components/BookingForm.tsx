@@ -1,87 +1,100 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, User, Phone, BookOpen, Send, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
-import { BookingFormData, AppointmentType } from '../types/booking';
-import { useBooking } from '../hooks/useBooking';
+import React, { useState } from "react";
+import {
+  Calendar,
+  Clock,
+  User,
+  Phone,
+  BookOpen,
+  Send,
+  CheckCircle,
+  AlertCircle,
+  ExternalLink,
+} from "lucide-react";
+import { BookingFormData, AppointmentType } from "../types/booking";
+import { useBooking } from "../hooks/useBooking";
 
 interface BookingFormProps {
   onSubmit?: (data: BookingFormData) => void;
   loading?: boolean;
 }
 
-export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: externalLoading = false }) => {
-  const { 
-    loading: apiLoading, 
-    error, 
-    success, 
-    bookingResponse, 
+export const BookingForm: React.FC<BookingFormProps> = ({
+  onSubmit,
+  loading: externalLoading = false,
+}) => {
+  const {
+    loading: apiLoading,
+    error,
+    success,
+    bookingResponse,
     createBooking,
-    clearState 
+    clearState,
   } = useBooking();
 
   const isLoading = externalLoading || apiLoading;
   const [formData, setFormData] = useState<BookingFormData>({
-    userName: '',
-    userPhone: '',
-    appointmentType: 'CONSULTATION',
-    appointmentDate: '',
+    userName: "",
+    userPhone: "",
+    appointmentType: "CONSULTATION",
+    appointmentDate: "",
     bookingDetails: {
-      subject: '',
-      level: '',
+      subject: "",
+      level: "",
       duration: 60,
-      notes: '',
+      notes: "",
     },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Clear previous state
     clearState();
-    
+
     // Basic validation
     if (!formData.userName.trim()) {
-      console.error('User name is required');
+      console.error("User name is required");
       return;
     }
-    
+
     if (!formData.userPhone.trim()) {
-      console.error('Phone number is required');
+      console.error("Phone number is required");
       return;
     }
-    
+
     if (!formData.appointmentDate) {
-      console.error('Appointment date is required');
+      console.error("Appointment date is required");
       return;
     }
-    
+
     try {
       // Ensure appointmentDate is properly formatted as ISO string
       const formattedData = {
         ...formData,
         appointmentDate: new Date(formData.appointmentDate).toISOString(),
       };
-      
+
       // Use the API hook to create booking
       await createBooking(formattedData);
-      
+
       // Also call the external onSubmit if provided
       if (onSubmit) {
         onSubmit(formattedData);
       }
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
     }
   };
 
   const handleInputChange = (field: keyof BookingFormData, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
   const handleBookingDetailsChange = (field: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       bookingDetails: {
         ...prev.bookingDetails,
@@ -101,7 +114,9 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 text-white">
         <h2 className="text-xl font-semibold">Create New Booking</h2>
-        <p className="text-blue-100 text-sm mt-1">Fill out the form to schedule your appointment</p>
+        <p className="text-blue-100 text-sm mt-1">
+          Fill out the form to schedule your appointment
+        </p>
       </div>
 
       {/* Form */}
@@ -112,7 +127,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
             <User className="h-5 w-5 mr-2" />
             Personal Information
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -122,12 +137,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
                 type="text"
                 required
                 value={formData.userName}
-                onChange={(e) => handleInputChange('userName', e.target.value)}
+                onChange={(e) => handleInputChange("userName", e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter your full name"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Phone Number
@@ -136,7 +151,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
                 type="tel"
                 required
                 value={formData.userPhone}
-                onChange={(e) => handleInputChange('userPhone', e.target.value)}
+                onChange={(e) => handleInputChange("userPhone", e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="+1 (555) 123-4567"
               />
@@ -150,7 +165,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
             <Calendar className="h-5 w-5 mr-2" />
             Appointment Details
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -158,7 +173,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
               </label>
               <select
                 value={formData.appointmentType}
-                onChange={(e) => handleInputChange('appointmentType', e.target.value as AppointmentType)}
+                onChange={(e) =>
+                  handleInputChange(
+                    "appointmentType",
+                    e.target.value as AppointmentType
+                  )
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
                 <option value="CONSULTATION">Consultation</option>
@@ -168,7 +188,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
                 <option value="WORKSHOP">Workshop</option>
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Date & Time
@@ -177,7 +197,9 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
                 type="datetime-local"
                 required
                 value={formData.appointmentDate || defaultDateTime}
-                onChange={(e) => handleInputChange('appointmentDate', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("appointmentDate", e.target.value)
+                }
                 min={new Date().toISOString().slice(0, 16)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
@@ -191,7 +213,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
             <BookOpen className="h-5 w-5 mr-2" />
             Additional Details
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -199,20 +221,24 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
               </label>
               <input
                 type="text"
-                value={formData.bookingDetails.subject || ''}
-                onChange={(e) => handleBookingDetailsChange('subject', e.target.value)}
+                value={formData.bookingDetails.subject || ""}
+                onChange={(e) =>
+                  handleBookingDetailsChange("subject", e.target.value)
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Mathematics, Science, etc."
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Level
               </label>
               <select
-                value={formData.bookingDetails.level || ''}
-                onChange={(e) => handleBookingDetailsChange('level', e.target.value)}
+                value={formData.bookingDetails.level || ""}
+                onChange={(e) =>
+                  handleBookingDetailsChange("level", e.target.value)
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
                 <option value="">Select Level</option>
@@ -223,14 +249,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
               </select>
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Additional Notes
             </label>
             <textarea
-              value={formData.bookingDetails.notes || ''}
-              onChange={(e) => handleBookingDetailsChange('notes', e.target.value)}
+              value={formData.bookingDetails.notes || ""}
+              onChange={(e) =>
+                handleBookingDetailsChange("notes", e.target.value)
+              }
               rows={3}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               placeholder="Any special requirements or notes..."
@@ -249,41 +277,27 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmit, loading: ext
                   <h4 className="text-2xl font-bold text-green-800 mb-2">
                     Booking Created Successfully!
                   </h4>
-                  <p className="text-green-700 mb-4">{bookingResponse.message}</p>
-                  
+                  <p className="text-green-700 mb-4">
+                    {bookingResponse.message}
+                  </p>
+
                   <div className="bg-white rounded-lg p-4 mb-6 border border-green-300">
                     <p className="text-green-700 font-medium mb-2">
-                      <strong>Booking ID:</strong> {bookingResponse.bookingId}
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <p className="text-green-800 font-semibold text-lg">
-                      Click the link below to view your booking details:
-                    </p>
-                    
-                    <a
-                      href={bookingResponse.magicLink}
-                      className="inline-flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl space-x-2"
-                    >
-                      <span>Access My Booking</span>
-                      <ExternalLink className="h-5 w-5" />
-                    </a>
-                    
-                    <p className="text-green-600 text-sm">
-                      You can also bookmark this link to access your booking later
+                      <strong>Booking Magic Link:</strong> {bookingResponse.magicLink}
                     </p>
                   </div>
                 </div>
               </div>
             )}
-            
+
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
                 <div className="flex items-start">
                   <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
                   <div className="flex-1">
-                    <h4 className="text-red-800 font-semibold">Booking Failed</h4>
+                    <h4 className="text-red-800 font-semibold">
+                      Booking Failed
+                    </h4>
                     <p className="text-red-700 text-sm mt-1">{error}</p>
                   </div>
                 </div>
