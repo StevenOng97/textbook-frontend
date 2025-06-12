@@ -38,6 +38,7 @@ export interface BookingDetails {
   paymentUpdatedAt?: string;
   lastAccessedAt?: string;
   accessCount: number;
+  isExpired?: boolean;
 }
 
 export interface PaymentUpdateRequest {

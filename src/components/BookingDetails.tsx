@@ -157,6 +157,18 @@ export const BookingDetails: React.FC<BookingDetailsProps> = ({
     );
   }
 
+  if (bookingDetails.isExpired) {
+    return (
+      <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+        <div className="text-center text-gray-500">
+          <BookOpen className="h-12 w-12 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold">Booking Expired</h3>
+          <p className="text-sm mt-1">Your booking has expired. Please contact support.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
       {/* Header */}
